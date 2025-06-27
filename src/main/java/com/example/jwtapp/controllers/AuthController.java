@@ -51,8 +51,6 @@ public class AuthController {
   @PostMapping("/signin")
   public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
     try {
-      System.out.println("🔑 Đang đăng nhập username: " + loginRequest.getUsername());
-
       Authentication authentication = authenticationManager.authenticate(
           new UsernamePasswordAuthenticationToken(
               loginRequest.getUsername(),
@@ -67,7 +65,7 @@ public class AuthController {
           .map(item -> item.getAuthority())
           .collect(Collectors.toList());
 
-      System.out.println("✅ Đăng nhập thành công: " + userDetails.getUsername());
+      System.out.println("Đăng nhập thành công: " + userDetails.getUsername());
 
       return ResponseEntity.ok(new JwtResponse(
           jwt,
@@ -76,7 +74,7 @@ public class AuthController {
           userDetails.getEmail(),
           roles));
     } catch (Exception e) {
-      System.err.println("❌ Đăng nhập thất bại: " + e.getMessage());
+      System.err.println("Đăng nhập thất bại: " + e.getMessage());
       e.printStackTrace();
       return ResponseEntity.status(401).body(new MessageResponse("Login failed: " + e.getMessage()));
     }
@@ -94,7 +92,6 @@ public class AuthController {
           .body(new MessageResponse("Error: Email is already in use!"));
     }
 
-    // Tạo user mới
     User user = new User(
         signUpRequest.getUsername(),
         signUpRequest.getEmail(),
