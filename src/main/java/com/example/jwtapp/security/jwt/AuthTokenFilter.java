@@ -33,7 +33,6 @@ public class AuthTokenFilter extends OncePerRequestFilter {
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, IOException {
 
-    // ✅ Bỏ qua filter với endpoint không cần JWT (login, đăng ký, v.v.)
     String path = request.getServletPath();
     if (path.startsWith("/api/auth/")) {
       filterChain.doFilter(request, response);

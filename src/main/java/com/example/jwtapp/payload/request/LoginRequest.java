@@ -10,7 +10,6 @@ public class LoginRequest {
     @NotBlank
     private String password;
 
-    // Getter & Setter
     public String getUsername() {
         return username;
     }

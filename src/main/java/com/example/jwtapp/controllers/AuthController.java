@@ -48,7 +48,6 @@ public class AuthController {
   @Autowired
   private JwtUtils jwtUtils;
 
-  // ✅ FIX: Thêm log và xử lý bắt lỗi cho đăng nhập
   @PostMapping("/signin")
   public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
     try {
