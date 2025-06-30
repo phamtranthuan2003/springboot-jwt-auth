@@ -48,38 +48,6 @@ public class AuthController {
   @Autowired
   private JwtUtils jwtUtils;
 
-  @PostMapping("/signin")
-  public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-    try {
-      Authentication authentication = authenticationManager.authenticate(
-          new UsernamePasswordAuthenticationToken(
-              loginRequest.getUsername(),
-              loginRequest.getPassword()));
-
-      SecurityContextHolder.getContext().setAuthentication(authentication);
-      String jwt = jwtUtils.generateJwtToken(authentication);
-
-      UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-
-      List<String> roles = userDetails.getAuthorities().stream()
-          .map(item -> item.getAuthority())
-          .collect(Collectors.toList());
-
-      System.out.println("Đăng nhập thành công: " + userDetails.getUsername());
-
-      return ResponseEntity.ok(new JwtResponse(
-          jwt,
-          userDetails.getId(),
-          userDetails.getUsername(),
-          userDetails.getEmail(),
-          roles));
-    } catch (Exception e) {
-      System.err.println("Đăng nhập thất bại: " + e.getMessage());
-      e.printStackTrace();
-      return ResponseEntity.status(401).body(new MessageResponse("Login failed: " + e.getMessage()));
-    }
-  }
-
   @PostMapping("/signup")
   public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
     if (userRepository.existsByUsername(signUpRequest.getUsername())) {
@@ -128,5 +96,36 @@ public class AuthController {
     userRepository.save(user);
 
     return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+  }
+  @PostMapping("/signin")
+  public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+    try {
+      Authentication authentication = authenticationManager.authenticate(
+          new UsernamePasswordAuthenticationToken(
+              loginRequest.getUsername(),
+              loginRequest.getPassword()));
+
+      SecurityContextHolder.getContext().setAuthentication(authentication);
+      String jwt = jwtUtils.generateJwtToken(authentication);
+
+      UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+      List<String> roles = userDetails.getAuthorities().stream()
+          .map(item -> item.getAuthority())
+          .collect(Collectors.toList());
+
+      System.out.println("Đăng nhập thành công: " + userDetails.getUsername());
+
+      return ResponseEntity.ok(new JwtResponse(
+          jwt,
+          userDetails.getId(),
+          userDetails.getUsername(),
+          userDetails.getEmail(),
+          roles));
+    } catch (Exception e) {
+      System.err.println("Đăng nhập thất bại: " + e.getMessage());
+      e.printStackTrace();
+      return ResponseEntity.status(401).body(new MessageResponse("Login failed: " + e.getMessage()));
+    }
   }
 }
